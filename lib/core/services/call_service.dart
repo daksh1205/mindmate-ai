@@ -2,12 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
+import 'package:mindmate_ai/core/utils/constants.dart';
 
 class CallService {
-  static const String _baseUrl = 'https://api.bland.ai/v1/calls';
-  static const String _apiKey =
-      'org_34a69812d4d1065d12e311e1c739ab5f2545933417e9fef25eb635bdaadd8b4ccb65fe26c8e6d6784e8b69';
-
+  static const String _baseUrl = AppSecrets.blandBaseUrl;
+  static const String _apiKey = AppSecrets.blandApiKey;
   // Call state management
   final ValueNotifier<CallState> callState = ValueNotifier(CallState.idle);
   final ValueNotifier<Duration> callDuration = ValueNotifier(Duration.zero);

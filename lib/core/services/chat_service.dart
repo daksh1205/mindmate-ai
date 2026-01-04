@@ -4,8 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:mindmate_ai/core/utils/constants.dart';
 
 class ChatService {
-  static const String _apiKey = AppConstants.apiKey;
-  static const String _baseUrl = AppConstants.baseUrl;
+  static const String _apiKey = AppSecrets.apiKey;
+  static const String _baseUrl = AppSecrets.baseUrl;
 
   final List<Map<String, dynamic>> _conversationHistory = [];
 
