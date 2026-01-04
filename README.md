@@ -1,16 +1,30 @@
-# mindmate_ai
+# mindmate
 
-A new Flutter project.
+a mental health support app for indian teens (13-19) who need someone to talk to.
 
-## Getting Started
+## what it does
 
-This project is a starting point for a Flutter application.
+- chat with an ai companion that actually gets it
+- call when typing feels too hard
+- track your mood over time
+- journal your thoughts
+- get crisis resources when things get rough
 
-A few resources to get you started if this is your first Flutter project:
+## built with
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- flutter for the app
+- google ai for chat
+- bland ai for voice calls
+- lots of care for teens who need support
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## for indian teens
+
+includes crisis helplines like iCall, vandrevala foundation, and aasra because sometimes you need real human help.
+
+## why this exists
+
+therapy can be expensive, intimidating, or just not accessible. this isn't a replacement for professional help, but it's something when you need to talk at 2am and don't know where else to turn.
+
+---
+
+*if you're struggling, please reach out to a trusted adult or mental health professional. you matter.*
