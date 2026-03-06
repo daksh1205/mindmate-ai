@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mindmate_ai/app/pages/profile_setup_screen.dart';
 
@@ -80,8 +81,9 @@ class PrivacyPromiseScreen extends StatelessWidget {
                                         ),
                                       ),
                                       child: ClipOval(
-                                        child: Image.network(
-                                          'https://lh3.googleusercontent.com/aida-public/AB6AXuD_aLvQerzKbMNwI3WTScEJYukr12HqbUEQ3nzD8khAZyIcO3IfhXjqI8rPP08gJC96RopkeJe7sKqsqvLr_Z11EFn1AUgyMJ7XIppjpa3HaQv_iPEg3S7yX4GSNH8HkpEmv4q4z1Zm-dGw4DrM2kvK0RXqFKMHWdHJMY196RYsKqQ8BDYwdnjGuLjEJgOlD8r-YCimG5OXQwq5iu54nHTIi0TjaugI5KZKpMF5Z0wrWn9KWJqjd8NiF1RMI1Jd-J2fMq9GdyhCpy8N',
+                                        child: CachedNetworkImage(
+                                          imageUrl:
+                                              'https://lh3.googleusercontent.com/aida-public/AB6AXuD_aLvQerzKbMNwI3WTScEJYukr12HqbUEQ3nzD8khAZyIcO3IfhXjqI8rPP08gJC96RopkeJe7sKqsqvLr_Z11EFn1AUgyMJ7XIppjpa3HaQv_iPEg3S7yX4GSNH8HkpEmv4q4z1Zm-dGw4DrM2kvK0RXqFKMHWdHJMY196RYsKqQ8BDYwdnjGuLjEJgOlD8r-YCimG5OXQwq5iu54nHTIi0TjaugI5KZKpMF5Z0wrWn9KWJqjd8NiF1RMI1Jd-J2fMq9GdyhCpy8N',
                                           fit: BoxFit.contain,
                                         ),
                                       ),

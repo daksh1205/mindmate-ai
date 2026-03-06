@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:mindmate_ai/core/utils/constants.dart';
 
+import 'call_history_service.dart';
+
 class CallService {
   static const String _baseUrl = AppSecrets.blandBaseUrl;
   static const String _apiKey = AppSecrets.blandApiKey;
@@ -75,6 +77,19 @@ class CallService {
 
       if (response.statusCode == 200) {
         _currentCallId = responseJson['call_id'];
+
+        if (_currentCallId != null) {
+          await CallHistoryService.saveNewCall(
+            CallRecord(
+              callId: _currentCallId!,
+              phoneNumber: phoneNumber,
+              createdAt: DateTime.now().toIso8601String(),
+              summary: '',
+              status: 'initiated',
+              callLength: 0.0,
+            ),
+          );
+        }
 
         if (kDebugMode) {
           print('Call successfully initiated');

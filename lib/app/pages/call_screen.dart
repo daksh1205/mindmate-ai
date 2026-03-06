@@ -34,6 +34,11 @@ class _CallScreenState extends State<CallScreen>
     super.dispose();
   }
 
+  Future<void> _handleBack() async {
+    await _callService.endCall(); // resets state to idle
+    if (mounted) Navigator.pop(context);
+  }
+
   Future<void> _handleStartCall() async {
     if (_callService.callState.value != CallState.idle) return;
 
@@ -200,54 +205,60 @@ class _CallScreenState extends State<CallScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            // Subtle Background Glow
-            Positioned(
-              top: -100,
-              left: 0,
-              right: 0,
-              child: Container(
-                height: 300,
-                decoration: BoxDecoration(
-                  gradient: RadialGradient(
-                    center: Alignment.topCenter,
-                    radius: 1.5,
-                    colors: [AppColors.primaryOverlay5, Colors.transparent],
-                  ),
-                ),
-              ),
-            ),
-            // Main Content
-            Column(
-              children: [
-                // Header
-                _buildHeader(),
-                // Main Content Area
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 40),
-                        // Avatar & Greeting Section
-                        _buildAvatarSection(),
-                        const SizedBox(height: 60),
-                        // Call Button with Ripples
-                        _buildCallButton(),
-                        const SizedBox(height: 60),
-                        // Bottom Instructions
-                        _buildInstructions(),
-                        const SizedBox(height: 32),
-                      ],
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) async {
+        if (!didPop) await _handleBack();
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.backgroundDark,
+        body: SafeArea(
+          child: Stack(
+            children: [
+              // Subtle Background Glow
+              Positioned(
+                top: -100,
+                left: 0,
+                right: 0,
+                child: Container(
+                  height: 300,
+                  decoration: BoxDecoration(
+                    gradient: RadialGradient(
+                      center: Alignment.topCenter,
+                      radius: 1.5,
+                      colors: [AppColors.primaryOverlay5, Colors.transparent],
                     ),
                   ),
                 ),
-              ],
-            ),
-          ],
+              ),
+              // Main Content
+              Column(
+                children: [
+                  // Header
+                  _buildHeader(),
+                  // Main Content Area
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 40),
+                          // Avatar & Greeting Section
+                          _buildAvatarSection(),
+                          const SizedBox(height: 60),
+                          // Call Button with Ripples
+                          _buildCallButton(),
+                          const SizedBox(height: 60),
+                          // Bottom Instructions
+                          _buildInstructions(),
+                          const SizedBox(height: 32),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -260,7 +271,7 @@ class _CallScreenState extends State<CallScreen>
         children: [
           // Back button
           GestureDetector(
-            onTap: () => Navigator.pop(context),
+            onTap: _handleBack,
             child: Container(
               width: 48,
               height: 48,

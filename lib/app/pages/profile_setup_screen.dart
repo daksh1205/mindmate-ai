@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mindmate_ai/app/pages/dashboard_screen.dart';
 import '../../core/services/shared_preferences_service.dart';
@@ -435,7 +436,10 @@ class _AvatarOption extends StatelessWidget {
                       shape: BoxShape.circle,
                     ),
                     child: ClipOval(
-                      child: Image.network(avatar.imageUrl, fit: BoxFit.cover),
+                      child: CachedNetworkImage(
+                        imageUrl: avatar.imageUrl,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
