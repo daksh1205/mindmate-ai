@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:intl/intl.dart';
 import '../../core/services/chat_service.dart';
+import '../../core/services/firebase_chat_service.dart';
 import '../../core/utils/colors.dart';
 import '../../core/utils/styles.dart';
 
@@ -18,6 +19,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final ScrollController _scrollController = ScrollController();
   final List<ChatMessage> _messages = [];
   final ChatService _chatService = ChatService();
+  final FirebaseChatService _firebaseChatService = FirebaseChatService();
 
   bool _isTyping = false;
   String _currentTime = '';
@@ -26,11 +28,13 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     _updateCurrentTime();
+    _firebaseChatService.startConversation();
     _loadWelcomeMessage();
   }
 
   @override
   void dispose() {
+    _firebaseChatService.endConversation();
     _messageController.dispose();
     _scrollController.dispose();
     _chatService.dispose();
@@ -47,14 +51,15 @@ class _ChatScreenState extends State<ChatScreen> {
   Future<void> _loadWelcomeMessage() async {
     await Future.delayed(const Duration(milliseconds: 500));
 
-    _addMessage(
-      ChatMessage(
-        text:
-            "Hey! I'm MindMate, your supportive friend. 💙 I'm here whenever you need someone to talk to. How are you feeling today?",
-        isUser: false,
-        timestamp: DateTime.now(),
-      ),
+    final welcomeMsg = ChatMessage(
+      text:
+          "Hey! I'm MindMate, your supportive friend. 💙 I'm here whenever you need someone to talk to. How are you feeling today?",
+      isUser: false,
+      timestamp: DateTime.now(),
     );
+
+    _addMessage(welcomeMsg);
+    _firebaseChatService.saveMessage(welcomeMsg);
   }
 
   void _addMessage(ChatMessage message) {
@@ -82,50 +87,53 @@ class _ChatScreenState extends State<ChatScreen> {
     final userMessage = _messageController.text.trim();
     _messageController.clear();
 
-    // Add user message
-    _addMessage(
-      ChatMessage(text: userMessage, isUser: true, timestamp: DateTime.now()),
+    final userMsg = ChatMessage(
+      text: userMessage,
+      isUser: true,
+      timestamp: DateTime.now(),
     );
 
-    // Show typing indicator
+    _addMessage(userMsg);
+    _firebaseChatService.saveMessage(userMsg);
+
     setState(() {
       _isTyping = true;
     });
     _scrollToBottom();
 
     try {
-      // Get AI response
       final aiResponse = await _chatService.sendMessage(userMessage);
 
-      // Hide typing indicator
       setState(() {
         _isTyping = false;
       });
 
-      // Add AI response
-      _addMessage(
-        ChatMessage(text: aiResponse, isUser: false, timestamp: DateTime.now()),
+      final aiMsg = ChatMessage(
+        text: aiResponse,
+        isUser: false,
+        timestamp: DateTime.now(),
       );
+
+      _addMessage(aiMsg);
+      _firebaseChatService.saveMessage(aiMsg);
     } catch (e) {
-      // Hide typing indicator
       setState(() {
         _isTyping = false;
       });
 
-      // Show error message
-      _addMessage(
-        ChatMessage(
-          text:
-              "I'm having a bit of trouble right now, but I'm still here for you. Can you try that again?",
-          isUser: false,
-          timestamp: DateTime.now(),
-        ),
+      final errorMsg = ChatMessage(
+        text:
+            "I'm having a bit of trouble right now, but I'm still here for you. Can you try that again?",
+        isUser: false,
+        timestamp: DateTime.now(),
       );
+
+      _addMessage(errorMsg);
+      _firebaseChatService.saveMessage(errorMsg);
     }
   }
 
   void _handleChipTap(String chipText) {
-    // Extract the text without emoji
     String message = '';
     if (chipText.contains('vent')) {
       message = "I need to vent about something";
@@ -158,18 +166,13 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
                 itemCount: _messages.length + 2,
                 itemBuilder: (context, index) {
-                  if (index == 0) {
-                    return _buildTimestamp();
-                  }
-
+                  if (index == 0) return _buildTimestamp();
                   if (index == _messages.length + 1) {
                     return _isTyping
                         ? _buildTypingIndicator()
                         : const SizedBox.shrink();
                   }
-
-                  final message = _messages[index - 1];
-                  return _buildMessageBubble(message);
+                  return _buildMessageBubble(_messages[index - 1]);
                 },
               ),
             ),
@@ -261,9 +264,7 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
           GestureDetector(
-            onTap: () {
-              // Show options menu
-            },
+            onTap: () {},
             child: Container(
               padding: const EdgeInsets.all(8),
               child: Icon(
@@ -495,9 +496,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 );
               },
               onEnd: () {
-                if (mounted) {
-                  setState(() {});
-                }
+                if (mounted) setState(() {});
               },
             );
           },
